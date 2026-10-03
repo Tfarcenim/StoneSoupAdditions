@@ -6,7 +6,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [],
   "client": [
-    "MixinTitleScreen"
+    "tfar.stonesoupadditions.mixin.MixinTitleScreen"
   ],
   "server": [],
   "injectors": {
