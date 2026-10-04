@@ -22,10 +22,7 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.client.ICuriosScreen;
 import top.theillusivec4.curios.client.CuriosClientConfig;
 import top.theillusivec4.curios.client.KeyRegistry;
-import top.theillusivec4.curios.client.gui.CosmeticButton;
-import top.theillusivec4.curios.client.gui.CuriosButton;
-import top.theillusivec4.curios.client.gui.PageButton;
-import top.theillusivec4.curios.client.gui.RenderButton;
+import top.theillusivec4.curios.client.gui.*;
 import top.theillusivec4.curios.common.inventory.CosmeticCurioSlot;
 import top.theillusivec4.curios.common.inventory.CurioSlot;
 import top.theillusivec4.curios.common.network.client.CPacketPage;
@@ -55,22 +52,6 @@ public class StileCurioScreen extends AbstractContainerScreen<StileCurioMenu> im
         super(curiosContainer, playerInventory, title);
     }
 
-    public static Tuple<Integer, Integer> getButtonOffset(boolean isCreative) {
-        CuriosClientConfig.Client client = CuriosClientConfig.CLIENT;
-        CuriosClientConfig.Client.ButtonCorner corner = client.buttonCorner.get();
-        int x = 0;
-        int y = 0;
-
-        if (isCreative) {
-            x += corner.getCreativeXoffset() + client.creativeButtonXOffset.get();
-            y += corner.getCreativeYoffset() + client.creativeButtonYOffset.get();
-        } else {
-            x += corner.getXoffset() + client.buttonXOffset.get();
-            y += corner.getYoffset() + client.buttonYOffset.get();
-        }
-        return new Tuple<>(x, y);
-    }
-
     @Override
     public void init() {
 
@@ -79,19 +60,7 @@ public class StileCurioScreen extends AbstractContainerScreen<StileCurioMenu> im
             this.leftPos = (this.width - this.imageWidth) / 2;
             this.topPos = (this.height - this.imageHeight) / 2;
 
-
-      /*
-       This may not be a perfect workaround as it doesn't return the book upon switching back
-       to survival mode. Creative inventory doesn't have this problem because it doesn't have
-       recipe book at all, but here we only have one Screen and must toggle it circumstantially,
-       and sadly Curios' recipe book isn't and must not be an independent object. I can't think
-       of better implementation at the moment though.
-
-       Anyhow, this is better than letting the book persist in creative without a way to toggle it.
-       @author Extegral
-      */
-
-            Tuple<Integer, Integer> offsets = getButtonOffset(false);
+            Tuple<Integer, Integer> offsets = CuriosScreen.getButtonOffset(false);
             this.buttonCurios =
                     new CurioButton(
                             this,
@@ -178,8 +147,8 @@ public class StileCurioScreen extends AbstractContainerScreen<StileCurioMenu> im
     public void render(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         this.indexedDisplays.clear();
 
-            this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
-            super.render(guiGraphics, mouseX, mouseY, partialTicks);
+        this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
@@ -256,7 +225,7 @@ public class StileCurioScreen extends AbstractContainerScreen<StileCurioMenu> im
             this.panelWidth = this.menu.panelWidth;
             int i = this.leftPos;
             int j = this.topPos;
-            guiGraphics.blit(INVENTORY_LOCATION, i, j, 0, 0, 176, this.imageHeight);
+            guiGraphics.blit(StileScreen.INVENTORY_LOCATION, i, j, 0, 0, 176, this.imageHeight);
             InventoryScreen.renderEntityInInventoryFollowsMouse(
                     guiGraphics,
                     i + 26,
@@ -267,8 +236,8 @@ public class StileCurioScreen extends AbstractContainerScreen<StileCurioMenu> im
                     0.0625F,
                     mouseX,
                     mouseY,
-                    this.minecraft.player);
-            CuriosApi.getCuriosInventory(this.minecraft.player)
+                    menu.stileEntity);
+            CuriosApi.getCuriosInventory(menu.stileEntity)
                     .ifPresent(
                             handler -> {
                                 int xOffset = -33;

@@ -1,0 +1,10 @@
+{
+  "entities": ["stonesoupadditions:stile"],
+  "slots": [
+    "head",
+    "necklace",
+    "belt",
+    "hands",
+    "feet"
+  ]
+}

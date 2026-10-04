@@ -12,8 +12,6 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.ICuriosMenu;
@@ -43,7 +41,7 @@ public class StileCurioMenu extends AbstractContainerMenu implements ICuriosMenu
     private final boolean isLocalWorld;
 
     private final ResultContainer craftResult = new ResultContainer();
-    private final StileEntity stileEntity;
+    public final StileEntity stileEntity;
     public int currentPage;
     public int totalPages;
     public List<Integer> grid = new ArrayList<>();
@@ -85,15 +83,16 @@ public class StileCurioMenu extends AbstractContainerMenu implements ICuriosMenu
             columns = Mth.clamp(calculatedColumns, minimumColumns, 8);
             this.panelWidth = 14 + 18 * columns;
         }
+        StileEntity.InvWrapper wrapper = stileEntity.getInvWrapper();
 
         for (int k = 0; k < 4; ++k) {
             final EquipmentSlot equipmentslottype = VALID_EQUIPMENT_SLOTS[k];
-            this.addSlot(new Slot(player.getInventory(), 36 + (3 - k), 8, 8 + k * 18) {
+            this.addSlot(new Slot(wrapper, 3 - k, 8, 8 + k * 18) {
                 @Override
                 public void set(@Nonnull ItemStack stack) {
                     ItemStack itemstack = this.getItem();
                     super.set(stack);
-                    StileCurioMenu.this.player.onEquipItem(equipmentslottype, itemstack, stack);
+                    StileCurioMenu.this.stileEntity.onEquipItem(equipmentslottype, itemstack, stack);
                 }
 
                 @Override
@@ -103,7 +102,7 @@ public class StileCurioMenu extends AbstractContainerMenu implements ICuriosMenu
 
                 @Override
                 public boolean mayPlace(@Nonnull ItemStack stack) {
-                    return stack.canEquip(equipmentslottype, StileCurioMenu.this.player);
+                    return stack.canEquip(equipmentslottype, StileCurioMenu.this.stileEntity);
                 }
 
                 @Override
@@ -114,8 +113,6 @@ public class StileCurioMenu extends AbstractContainerMenu implements ICuriosMenu
                             && super.mayPickup(playerIn);
                 }
 
-
-                @OnlyIn(Dist.CLIENT)
                 @Override
                 public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
                     return Pair.of(InventoryMenu.BLOCK_ATLAS,
@@ -136,8 +133,7 @@ public class StileCurioMenu extends AbstractContainerMenu implements ICuriosMenu
         for (int i1 = 0; i1 < 9; ++i1) {
             this.addSlot(new Slot(player.getInventory(), i1, 8 + i1 * 18, 142));
         }
-        this.addSlot(new Slot(player.getInventory(), 40, 77, 62) {
-            @OnlyIn(Dist.CLIENT)
+        this.addSlot(new Slot(wrapper, 4, 77, 62) {
             @Override
             public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
                 return Pair

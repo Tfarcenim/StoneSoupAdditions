@@ -217,18 +217,12 @@ public class StileEntity extends ShoulderRidingEntity implements GeoEntity , Sma
     @Override
     public void openCustomInventoryScreen(Player player) {
         if (!this.level().isClientSide && (!this.isVehicle() || this.hasPassenger(player))) {
-            Services.PLATFORM.openExtendedMenu(player,new MenuProvider() {
-                @Override
-                public Component getDisplayName() {
-                    return StileEntity.this.getDisplayName();
-                }
-
-                @Override
-                public @Nullable AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
-                    return new StileMenu(containerId,playerInventory,new InvWrapper(),StileEntity.this);
-                }
-            },b -> b.writeInt(getId()));
+            Services.PLATFORM.openExtendedMenu(player,Services.PLATFORM.curioMenuProvider(this),b -> b.writeInt(getId()));
         }
+    }
+
+    public InvWrapper getInvWrapper() {
+        return new InvWrapper();
     }
 
     public class InvWrapper implements Container {

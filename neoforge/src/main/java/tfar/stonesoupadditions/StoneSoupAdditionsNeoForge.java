@@ -7,6 +7,7 @@ import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.RegisterEvent;
+import tfar.stonesoupadditions.datagen.SSADatagen;
 import tfar.stonesoupadditions.init.SSAEntityTypes;
 import tfar.stonesoupadditions.platform.NeoForgePlatformHelper;
 
@@ -17,6 +18,7 @@ public class StoneSoupAdditionsNeoForge {
         eventBus.addListener(this::register);
         eventBus.addListener(this::createAttributes);
         StoneSoupAdditions.init();
+        eventBus.addListener(SSADatagen::gather);
     }
 
     public void register(RegisterEvent event) {

@@ -15,7 +15,7 @@ import top.theillusivec4.curios.client.gui.CuriosButton;
 
 public class StileScreen extends AbstractContainerScreen<StileMenu> {
 
-    private static final ResourceLocation INVENTORY_LOCATION = StoneSoupAdditions.id("textures/gui/stile.png");
+    public static final ResourceLocation INVENTORY_LOCATION = StoneSoupAdditions.id("textures/gui/stile.png");
 
     public StileScreen(StileMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
