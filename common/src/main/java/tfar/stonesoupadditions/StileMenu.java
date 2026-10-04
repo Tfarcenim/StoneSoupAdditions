@@ -1,7 +1,9 @@
 package tfar.stonesoupadditions;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
@@ -10,9 +12,9 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 import tfar.stonesoupadditions.init.SSAMenuTypes;
-
-import java.util.UUID;
+import tfar.stonesoupadditions.platform.Services;
 
 public class StileMenu extends AbstractContainerMenu {
 
@@ -44,7 +46,7 @@ public class StileMenu extends AbstractContainerMenu {
         addSlot(new Slot(container, 3, 8, y));//head
 
         //hand
-        addSlot(new Slot(container, 4, 80, 12+18*3));
+        addSlot(new Slot(container, 4, 77, y+18*3));
 
         for (int k = 0; k < 3; k++) {
             for (int i1 = 0; i1 < 9; i1++) {
@@ -62,6 +64,12 @@ public class StileMenu extends AbstractContainerMenu {
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
         return ItemStack.EMPTY;
+    }
+
+    @Override
+    public boolean clickMenuButton(Player player, int id) {
+        Services.PLATFORM.openExtendedMenu(player, Services.PLATFORM.curioMenuProvider(stileEntity),b -> b.writeInt(stileEntity.getId()));
+        return true;
     }
 
     @Override

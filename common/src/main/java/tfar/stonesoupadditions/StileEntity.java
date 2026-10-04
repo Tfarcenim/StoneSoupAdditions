@@ -7,6 +7,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.*;
@@ -16,6 +17,7 @@ import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
+import net.minecraft.world.entity.animal.ShoulderRidingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -35,6 +37,7 @@ import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttack
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
+import org.apache.logging.log4j.core.jmx.Server;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -45,7 +48,7 @@ import tfar.stonesoupadditions.platform.Services;
 
 import java.util.List;
 
-public class StileEntity extends TamableAnimal implements GeoEntity , SmartBrainOwner<StileEntity>, ContainerListener,
+public class StileEntity extends ShoulderRidingEntity implements GeoEntity , SmartBrainOwner<StileEntity>, ContainerListener,
         HasCustomInventoryScreen{
 
     private static final EntityDataAccessor<Integer> FAINT_TIMER = SynchedEntityData.defineId(StileEntity.class,EntityDataSerializers.INT);
@@ -108,9 +111,9 @@ public class StileEntity extends TamableAnimal implements GeoEntity , SmartBrain
         return BrainActivityGroup.coreTasks(
                 new LookAtTarget<>(),                      // Have the entity turn to face and look at its current look target
                 new MoveToWalkTarget<>().cooldownFor(e -> 5),
-                new FollowOwner<>().following(o -> o.isOrderedToSit() || o.isPassenger() ? null : o.getOwner()),
-                new CustomBehaviour<>( e-> e.startRiding(getOwner(),true)).startCondition(e -> shouldRideOwner()),
-                new CustomBehaviour<>(LivingEntity::stopRiding).startCondition(e -> shouldStopRiding())
+                new FollowOwner<>().following(o -> o.isOrderedToSit() || o.isPassenger() ? null : o.getOwner())//,
+              //  new CustomBehaviour<>( e-> setSelfOnShoulder((ServerPlayer) getOwner())).startCondition(e -> shouldRideOwner()),
+              //  new CustomBehaviour<>(e -> setSelfOnShoulder((ServerPlayer) getOwner())).startCondition(e -> shouldStopRiding())
         );
     }
 
@@ -359,5 +362,17 @@ public class StileEntity extends TamableAnimal implements GeoEntity , SmartBrain
     }
 
     public static final int INVENTORY_SIZE = 5;
+
+    public boolean setSelfOnShoulder(ServerPlayer player) {
+        CompoundTag compoundtag = new CompoundTag();
+        compoundtag.putString("id", this.getEncodeId());
+        this.saveWithoutId(compoundtag);
+        if (((PlayerDuck)player).setStileEntityOnShoulder(compoundtag)) {
+            this.discard();
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 }

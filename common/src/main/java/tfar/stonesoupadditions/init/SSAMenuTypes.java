@@ -18,7 +18,7 @@ public class SSAMenuTypes {
         return Registry.register(BuiltInRegistries.MENU, key, new MenuType<>(factory, FeatureFlags.VANILLA_SET));
     }
 
-    private static <T extends AbstractContainerMenu> MenuType<T> registerExtended(String key, ContainerFactory<T> factory) {
+    public static <T extends AbstractContainerMenu> MenuType<T> registerExtended(String key, ContainerFactory<T> factory) {
         return Registry.register(BuiltInRegistries.MENU, key, Services.PLATFORM.createExtendedMenu(factory));
     }
 }

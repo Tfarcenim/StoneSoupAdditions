@@ -1,13 +1,17 @@
 package tfar.stonesoupadditions.client;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.player.Inventory;
 import tfar.stonesoupadditions.StileMenu;
 import tfar.stonesoupadditions.StoneSoupAdditions;
+import tfar.stonesoupadditions.platform.Services;
+import top.theillusivec4.curios.client.gui.CuriosButton;
 
 public class StileScreen extends AbstractContainerScreen<StileMenu> {
 
@@ -15,6 +19,17 @@ public class StileScreen extends AbstractContainerScreen<StileMenu> {
 
     public StileScreen(StileMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        Tuple<Integer, Integer> offsets = top.theillusivec4.curios.client.gui.CuriosScreen.getButtonOffset(false);
+        int x = offsets.getA();
+        int y = offsets.getB();
+        int size = 10;
+        int yOffset = 81;
+        addRenderableWidget(Services.PLATFORM.createCurioButton(this,this.leftPos + x - 2,topPos + y + yOffset, size, size, CuriosButton.BIG));
     }
 
     @Override
@@ -26,6 +41,10 @@ public class StileScreen extends AbstractContainerScreen<StileMenu> {
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
 
+    }
+
+    public void sendButtonClick(int id) {
+        this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, id);
     }
 
     @Override

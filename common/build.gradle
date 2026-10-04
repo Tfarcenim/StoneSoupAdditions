@@ -20,6 +20,9 @@ dependencies {
     compileOnly "software.bernie.geckolib:geckolib-common-${minecraft_version}:${geckolib_version}"
     compileOnly "net.tslat.smartbrainlib:SmartBrainLib-common-$minecraft_version:$sbl_version"
 
+    // Compile against only the API artifact
+    compileOnly ("top.theillusivec4.curios:curios-neoforge:${curios_version}")
+
 }
 
 configurations {

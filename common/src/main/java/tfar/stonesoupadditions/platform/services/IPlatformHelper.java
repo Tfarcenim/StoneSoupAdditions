@@ -1,12 +1,21 @@
 package tfar.stonesoupadditions.platform.services;
 
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.WidgetSprites;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import tfar.stonesoupadditions.ContainerFactory;
+import tfar.stonesoupadditions.StileEntity;
+import tfar.stonesoupadditions.network.client.S2CModPacket;
+import tfar.stonesoupadditions.network.server.C2SModPacket;
 
 import java.util.OptionalInt;
 import java.util.function.Consumer;
@@ -48,5 +57,18 @@ public interface IPlatformHelper {
     <T extends AbstractContainerMenu> MenuType<T> createExtendedMenu(ContainerFactory<T> factory);
     OptionalInt openExtendedMenu(Player player, MenuProvider provider, Consumer<RegistryFriendlyByteBuf> buffer);
 
+    Button createCurioButton(AbstractContainerScreen<?> parentGui, int xIn, int yIn, int widthIn, int heightIn,
+                             WidgetSprites sprites);
+
     boolean fireTameEvent();
+
+
+    <MSG extends S2CModPacket> void registerClientPacket(CustomPacketPayload.Type<MSG> type, StreamCodec<RegistryFriendlyByteBuf,MSG> streamCodec);
+    <MSG extends C2SModPacket> void registerServerPacket(CustomPacketPayload.Type<MSG> type, StreamCodec<RegistryFriendlyByteBuf,MSG> streamCodec);
+
+    void sendToClient(S2CModPacket msg, ServerPlayer player);
+    void sendToServer(C2SModPacket msg);
+
+    MenuProvider curioMenuProvider(StileEntity stileEntity);
+
 }

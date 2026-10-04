@@ -60,6 +60,10 @@ repositories {
         name = "SmartBrainLib (SBL) Maven Repo"
         url = "https://dl.cloudsmith.io/public/tslat/sbl/maven/"
     }
+    maven {
+        name = "Illusive Soulworks maven"
+        url = "https://maven.theillusivec4.top/"
+    }
 }
 
 // Declare capabilities on the outgoing configurations.

@@ -56,6 +56,14 @@ dependencies {
     }
     implementation "software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
     implementation "net.tslat.smartbrainlib:SmartBrainLib-neoforge-$minecraft_version:$sbl_version"
+
+    // Compile against only the API artifact
+  //  compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
+    // Use the full Curios API jar at runtime
+    implementation("top.theillusivec4.curios:curios-neoforge:${curios_version}")
+
+    //needed a mod that added curios
+    implementation "curse.maven:artifacts-312353:8791899"
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
