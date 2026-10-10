@@ -1,0 +1,52 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"stile.armored": {
+			"loop": "hold_on_last_frame",
+			"bones": {
+				"armor_leggings_body": {
+					"position": [16, -17.6, 0],
+					"scale": [0.575, 0.3, 0.85]
+				},
+				"armor_left_leg": {
+					"rotation": [0, 0, -10],
+					"position": [15.4, -8.5, 0],
+					"scale": [0.5, 0.29, 0.7]
+				},
+				"armor_helmet": {
+					"position": [16, -15, 0],
+					"scale": [0.9, 0.8, 0.9]
+				},
+				"armor_body": {
+					"position": [16, -16.5, 0],
+					"scale": [0.55, 0.3, 0.8]
+				},
+				"armor_left_arm": {
+					"rotation": [0, 0, 20],
+					"position": [12.5, -16.5, 0],
+					"scale": [0.4, 0.4, 0.6]
+				},
+				"armor_right_foot": {
+					"rotation": [0, 0, -10],
+					"position": [17.35, -8.1, 0],
+					"scale": [0.5, 0.3, 0.6]
+				},
+				"armor_right_leg": {
+					"rotation": [-0.434, 0.0379, 9.9905],
+					"position": [14.8, -8.9, 0],
+					"scale": [0.5, 0.29, 0.7]
+				},
+				"armor_right_arm": {
+					"rotation": [0, 0, -20],
+					"position": [13.25, -15.1, 0],
+					"scale": [0.4, 0.4, 0.6]
+				},
+				"armor_left_foot": {
+					"rotation": [0, 0, 10],
+					"position": [12.85, -8.45, 0],
+					"scale": [0.5, 0.3, 0.6]
+				}
+			}
+		}
+	}
+}

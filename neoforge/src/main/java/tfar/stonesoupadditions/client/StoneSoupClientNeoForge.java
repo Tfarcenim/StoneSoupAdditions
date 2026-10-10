@@ -28,7 +28,7 @@ public class StoneSoupClientNeoForge {
     }
 
     void models(final EntityRenderersEvent.RegisterRenderers event) {
-        EntityRenderers.register(SSAEntityTypes.STILE,c -> new GeoEntityRenderer<>(c,SSAEntityTypes.STILE));
+        EntityRenderers.register(SSAEntityTypes.STILE,c -> new StileRenderer(c,SSAEntityTypes.STILE));
     }
 
     void layers(EntityRenderersEvent.AddLayers event) {

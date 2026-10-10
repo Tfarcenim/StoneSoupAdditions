@@ -43,6 +43,12 @@
 					]
 				},
 				{
+					"name": "RightHand",
+					"parent": "RightArm",
+					"pivot": [-3.5, 3, -4],
+					"rotation": [45, 5, 15]
+				},
+				{
 					"name": "LeftArm",
 					"parent": "stile",
 					"pivot": [2.5, 7.75, 0],

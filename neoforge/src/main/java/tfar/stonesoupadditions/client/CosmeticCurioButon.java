@@ -7,24 +7,17 @@ import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.PacketDistributor;
-import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.client.gui.CosmeticButton;
 import top.theillusivec4.curios.common.network.client.CPacketToggleCosmetics;
 
 import javax.annotation.Nonnull;
 
 public class CosmeticCurioButon extends ImageButton {
 
-    public static final WidgetSprites OFF =
-            new WidgetSprites(ResourceLocation.fromNamespaceAndPath(CuriosApi.MODID, "cosmetic_off"),
-                    ResourceLocation.fromNamespaceAndPath(CuriosApi.MODID, "cosmetic_off_highlighted"));
-    public static final WidgetSprites ON =
-            new WidgetSprites(ResourceLocation.fromNamespaceAndPath(CuriosApi.MODID, "cosmetic_on"),
-                    ResourceLocation.fromNamespaceAndPath(CuriosApi.MODID, "cosmetic_on_highlighted"));
-
     private final StileCurioScreen parentGui;
 
     CosmeticCurioButon(StileCurioScreen parentGui, int xIn, int yIn, int widthIn, int heightIn) {
-        super(xIn, yIn, widthIn, heightIn, OFF,
+        super(xIn, yIn, widthIn, heightIn, CosmeticButton.OFF,
                 (button) -> {
                     parentGui.getMenu().toggleCosmetics();
                     PacketDistributor.sendToServer(
@@ -39,9 +32,9 @@ public class CosmeticCurioButon extends ImageButton {
         WidgetSprites sprites1;
 
         if (this.parentGui.getMenu().isViewingCosmetics) {
-            sprites1 = ON;
+            sprites1 = CosmeticButton.ON;
         } else {
-            sprites1 = OFF;
+            sprites1 = CosmeticButton.OFF;
         }
         this.setX(this.parentGui.getGuiLeft() - 27);
         this.setY(this.parentGui.getGuiTop() - 18);

@@ -63,6 +63,7 @@ public class StileCurioMenu extends AbstractContainerMenu implements ICuriosMenu
         this.isLocalWorld = this.player.level().isClientSide;
         this.curiosHandler = CuriosApi.getCuriosInventory(stileEntity).orElse(null);
         this.resetSlots();
+        stileEntity.setInteracting(true);
     }
 
     public void setPage(int page) {
@@ -267,6 +268,7 @@ public class StileCurioMenu extends AbstractContainerMenu implements ICuriosMenu
     @Override
     public void removed(@Nonnull Player playerIn) {
         super.removed(playerIn);
+        stileEntity.setInteracting(false);
     }
 
     @Override

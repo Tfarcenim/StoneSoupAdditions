@@ -26,17 +26,24 @@ import net.minecraft.world.level.Level;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
 import net.tslat.smartbrainlib.api.core.BrainActivityGroup;
 import net.tslat.smartbrainlib.api.core.SmartBrainProvider;
+import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.CustomBehaviour;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowOwner;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
+import net.tslat.smartbrainlib.example.SBLSkeleton;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -54,6 +61,8 @@ public class StileEntity extends ShoulderRidingEntity implements GeoEntity , Sma
     private static final EntityDataAccessor<Integer> FAINT_TIMER = SynchedEntityData.defineId(StileEntity.class,EntityDataSerializers.INT);
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+
+    private boolean interacting;
 
     public StileEntity(EntityType<? extends StileEntity> entityType, Level level) {
         super(entityType, level);
@@ -74,11 +83,6 @@ public class StileEntity extends ShoulderRidingEntity implements GeoEntity , Sma
     }
 
     @Override
-    protected void registerGoals() {
-        super.registerGoals();
-    }
-
-    @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         StileAnimations.registerControllers(this, controllers);
     }
@@ -96,24 +100,38 @@ public class StileEntity extends ShoulderRidingEntity implements GeoEntity , Sma
 
     @Override
     public List<? extends ExtendedSensor<StileEntity>> getSensors() {
-        NearbyLivingEntitySensor<StileEntity> nearbyLivingEntitySensor = new NearbyLivingEntitySensor<>();
-        nearbyLivingEntitySensor.setPredicate((target, entity) -> canTarget(target));
-        return List.of(nearbyLivingEntitySensor, // This tracks nearby entities
-                new HurtBySensor<>());
+        //NearbyLivingEntitySensor<StileEntity> nearbyLivingEntitySensor = new NearbyLivingEntitySensor<>();
+        //nearbyLivingEntitySensor.setPredicate((target, entity) -> canTarget(target));
+        return List.of(new HurtBySensor<>());//List.of(nearbyLivingEntitySensor);
     }
 
     boolean canTarget(LivingEntity target) {
-        return false;
+        return !(target instanceof Player player && player.getAbilities().instabuild);
+    }
+
+    @Override
+    public BrainActivityGroup<? extends StileEntity> getIdleTasks() {
+        return BrainActivityGroup.idleTasks(
+                new FirstApplicableBehaviour<>( // Run only one of the below behaviours, trying each one in order. Include explicit generic typing because javac is silly
+                        new TargetOrRetaliate<>(), // Set the attack target
+                        new SetPlayerLookTarget<>(), // Set the look target to a nearby player if available
+                        new SetRandomLookTarget<>().startCondition(p -> !isInteracting() && !isOrderedToSit())
+                                .stopIf(p -> isInteracting() || isOrderedToSit())), // Set the look target to a random nearby location
+                new OneRandomBehaviour<>( // Run only one of the below behaviours, picked at random
+                        new SetRandomWalkTarget<>() // Set the walk target to a nearby random pathable location
+                                .speedModifier(1).startCondition(p -> !isInteracting())
+                                .stopIf(p -> isInteracting()),
+                        new Idle<>() // Don't do anything for a bit
+                                .runFor(entity -> entity.getRandom().nextInt(30, 60))));
     }
 
     @Override
     public BrainActivityGroup<? extends StileEntity> getCoreTasks() {
         return BrainActivityGroup.coreTasks(
                 new LookAtTarget<>(),                      // Have the entity turn to face and look at its current look target
-                new MoveToWalkTarget<>().cooldownFor(e -> 5),
-                new FollowOwner<>().following(o -> o.isOrderedToSit() || o.isPassenger() ? null : o.getOwner())//,
-              //  new CustomBehaviour<>( e-> setSelfOnShoulder((ServerPlayer) getOwner())).startCondition(e -> shouldRideOwner()),
-              //  new CustomBehaviour<>(e -> setSelfOnShoulder((ServerPlayer) getOwner())).startCondition(e -> shouldStopRiding())
+                new MoveToWalkTarget<>().cooldownFor(e -> 5).startCondition(p -> !isInteracting() && !isOrderedToSit())
+                        .stopIf(p -> isInteracting()),//stop moving while equipping gear
+                new FollowOwner<>().following(o -> o.isOrderedToSit() || o.isPassenger() ? null : o.getOwner())
         );
     }
 
@@ -133,7 +151,6 @@ public class StileEntity extends ShoulderRidingEntity implements GeoEntity , Sma
         return !passenger;
     }
 
-
     @Override
     public BrainActivityGroup<? extends StileEntity> getFightTasks() {
         return BrainActivityGroup.fightTasks(
@@ -147,7 +164,8 @@ public class StileEntity extends ShoulderRidingEntity implements GeoEntity , Sma
                         Pair.of(new AnimatableMeleeAttack<>(4) {
                             @Override
                             protected void start(Mob entity) {
-                                BehaviorUtils.lookAtEntity(entity, this.target);
+                                super.start(entity);
+                                //BehaviorUtils.lookAtEntity(entity, this.target);
                             }
                         },9))
 
@@ -206,7 +224,7 @@ public class StileEntity extends ShoulderRidingEntity implements GeoEntity , Sma
     }
 
     public static AttributeSupplier.Builder createStileAttributes() {
-        return createMobAttributes().add(Attributes.MOVEMENT_SPEED,.3);
+        return createMobAttributes().add(Attributes.MOVEMENT_SPEED,.3).add(Attributes.ATTACK_DAMAGE);
     }
 
     @Override
@@ -369,4 +387,11 @@ public class StileEntity extends ShoulderRidingEntity implements GeoEntity , Sma
         }
     }
 
+    public void setInteracting(boolean interacting) {
+        this.interacting = interacting;
+    }
+
+    public boolean isInteracting() {
+        return interacting;
+    }
 }
