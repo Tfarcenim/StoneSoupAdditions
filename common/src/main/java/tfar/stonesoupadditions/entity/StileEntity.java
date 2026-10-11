@@ -1,8 +1,7 @@
-package tfar.stonesoupadditions;
+package tfar.stonesoupadditions.entity;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -16,11 +15,8 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import net.minecraft.world.entity.animal.ShoulderRidingEntity;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.tslat.smartbrainlib.api.SmartBrainOwner;
@@ -30,27 +26,21 @@ import net.tslat.smartbrainlib.api.core.behaviour.FirstApplicableBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.OneRandomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.attack.AnimatableMeleeAttack;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.look.LookAtTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.CustomBehaviour;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.misc.Idle;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.FollowOwner;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.move.MoveToWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetRandomWalkTarget;
 import net.tslat.smartbrainlib.api.core.behaviour.custom.path.SetWalkTargetToAttackTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.target.InvalidateAttackTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetPlayerLookTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.target.SetRandomLookTarget;
-import net.tslat.smartbrainlib.api.core.behaviour.custom.target.TargetOrRetaliate;
+import net.tslat.smartbrainlib.api.core.behaviour.custom.target.*;
 import net.tslat.smartbrainlib.api.core.sensor.ExtendedSensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.HurtBySensor;
 import net.tslat.smartbrainlib.api.core.sensor.vanilla.NearbyLivingEntitySensor;
-import net.tslat.smartbrainlib.example.SBLSkeleton;
-import org.apache.logging.log4j.core.jmx.Server;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
-import tfar.stonesoupadditions.entity.StileAnimations;
+import tfar.stonesoupadditions.PlayerDuck;
 import tfar.stonesoupadditions.platform.Services;
 
 import java.util.List;
@@ -100,20 +90,24 @@ public class StileEntity extends ShoulderRidingEntity implements GeoEntity , Sma
 
     @Override
     public List<? extends ExtendedSensor<StileEntity>> getSensors() {
-        //NearbyLivingEntitySensor<StileEntity> nearbyLivingEntitySensor = new NearbyLivingEntitySensor<>();
-        //nearbyLivingEntitySensor.setPredicate((target, entity) -> canTarget(target));
-        return List.of(new HurtBySensor<>());//List.of(nearbyLivingEntitySensor);
+        return List.of(new HurtBySensor<>(),new NearbyLivingEntitySensor<>());
     }
 
-    boolean canTarget(LivingEntity target) {
-        return !(target instanceof Player player && player.getAbilities().instabuild);
+    @Override
+    public boolean canBeSeenAsEnemy() {
+        return !fainted() && super.canBeSeenAsEnemy();
+    }
+
+    @Override
+    public boolean canAttack(LivingEntity target) {
+        return !fainted() && super.canAttack(target);
     }
 
     @Override
     public BrainActivityGroup<? extends StileEntity> getIdleTasks() {
         return BrainActivityGroup.idleTasks(
                 new FirstApplicableBehaviour<>( // Run only one of the below behaviours, trying each one in order. Include explicit generic typing because javac is silly
-                        new TargetOrRetaliate<>(), // Set the attack target
+                        new StileTargetBehaviour(this), // Set the attack target
                         new SetPlayerLookTarget<>(), // Set the look target to a nearby player if available
                         new SetRandomLookTarget<>().startCondition(p -> !isInteracting() && !isOrderedToSit())
                                 .stopIf(p -> isInteracting() || isOrderedToSit())), // Set the look target to a random nearby location

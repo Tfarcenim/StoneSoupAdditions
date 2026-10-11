@@ -3,7 +3,6 @@ package tfar.stonesoupadditions.platform.services;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -13,7 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import tfar.stonesoupadditions.ContainerFactory;
-import tfar.stonesoupadditions.StileEntity;
+import tfar.stonesoupadditions.entity.StileEntity;
 import tfar.stonesoupadditions.network.client.S2CModPacket;
 import tfar.stonesoupadditions.network.server.C2SModPacket;
 

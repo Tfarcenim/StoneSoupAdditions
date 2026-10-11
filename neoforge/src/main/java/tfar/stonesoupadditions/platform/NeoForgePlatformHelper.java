@@ -18,7 +18,7 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import org.jetbrains.annotations.Nullable;
 import tfar.stonesoupadditions.ContainerFactory;
 import tfar.stonesoupadditions.StileCurioMenu;
-import tfar.stonesoupadditions.StileEntity;
+import tfar.stonesoupadditions.entity.StileEntity;
 import tfar.stonesoupadditions.client.CurioButton;
 import tfar.stonesoupadditions.network.client.S2CModPacket;
 import tfar.stonesoupadditions.network.server.C2SModPacket;

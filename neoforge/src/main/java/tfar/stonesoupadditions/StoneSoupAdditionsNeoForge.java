@@ -5,9 +5,9 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import tfar.stonesoupadditions.datagen.SSADatagen;
+import tfar.stonesoupadditions.entity.StileEntity;
 import tfar.stonesoupadditions.init.SSAEntityTypes;
 import tfar.stonesoupadditions.platform.NeoForgePlatformHelper;
 
@@ -27,7 +27,7 @@ public class StoneSoupAdditionsNeoForge {
     }
 
     void createAttributes(EntityAttributeCreationEvent event) {
-        event.put(SSAEntityTypes.STILE,StileEntity.createStileAttributes().build());
+        event.put(SSAEntityTypes.STILE, StileEntity.createStileAttributes().build());
     }
 
     void network(RegisterPayloadHandlersEvent event) {

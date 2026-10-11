@@ -1,9 +1,7 @@
 package tfar.stonesoupadditions;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
@@ -12,7 +10,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
+import tfar.stonesoupadditions.entity.StileEntity;
 import tfar.stonesoupadditions.init.SSAMenuTypes;
 import tfar.stonesoupadditions.platform.Services;
 
@@ -33,7 +31,7 @@ public class StileMenu extends AbstractContainerMenu {
         return entity instanceof StileEntity ? (StileEntity) entity : null;
     }
 
-    public StileMenu(int containerId, Inventory inventory, Container container,StileEntity stileEntity) {
+    public StileMenu(int containerId, Inventory inventory, Container container, StileEntity stileEntity) {
         super(SSAMenuTypes.STILE, containerId);
         this.container = container;
         this.stileEntity = stileEntity;

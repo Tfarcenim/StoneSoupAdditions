@@ -4,7 +4,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.renderer.layer.ItemArmorGeoLayer;
-import tfar.stonesoupadditions.StileEntity;
+import tfar.stonesoupadditions.entity.StileEntity;
 
 public class StileArmorLayer extends ItemArmorGeoLayer<StileEntity> {
     public StileArmorLayer(StileRenderer geoRenderer) {

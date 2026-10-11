@@ -7,12 +7,11 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
-import tfar.stonesoupadditions.StileEntity;
+import tfar.stonesoupadditions.entity.StileEntity;
 import tfar.stonesoupadditions.init.SSAEntityTypes;
 
 public class StileOnShoulderLayer<T extends Player> extends RenderLayer<T, PlayerModel<T>> {

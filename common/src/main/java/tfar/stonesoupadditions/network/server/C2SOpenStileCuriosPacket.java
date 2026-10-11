@@ -5,7 +5,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
-import tfar.stonesoupadditions.StileEntity;
+import tfar.stonesoupadditions.entity.StileEntity;
 import tfar.stonesoupadditions.network.PacketHandler;
 import tfar.stonesoupadditions.platform.Services;
 

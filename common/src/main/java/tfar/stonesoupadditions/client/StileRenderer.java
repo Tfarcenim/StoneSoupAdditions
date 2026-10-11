@@ -8,7 +8,7 @@ import net.minecraft.world.entity.EntityType;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
-import tfar.stonesoupadditions.StileEntity;
+import tfar.stonesoupadditions.entity.StileEntity;
 
 public class StileRenderer extends GeoEntityRenderer<StileEntity> {
     public StileRenderer(EntityRendererProvider.Context context, EntityType<? extends StileEntity> entityType) {
