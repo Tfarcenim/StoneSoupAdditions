@@ -19,9 +19,15 @@ public class StileAnimations {
                 return state.setAndContinue(FAINT);
             }
 
+            if (stile.isInSittingPose()) {
+                return state.setAndContinue(DefaultAnimations.SIT);
+            }
+
             RawAnimation currentAnim = state.isMoving() ? (stile.isSprinting() ? DefaultAnimations.RUN :DefaultAnimations.WALK)
                         : DefaultAnimations.IDLE;
             return state.setAndContinue(currentAnim);
-        }).triggerableAnim("faint", FAINT));
+        })
+                .triggerableAnim("jump_attack", ATTACK_JUMP)
+                .triggerableAnim("short_attack", ATTACK_SHORT));
     }
 }

@@ -2,6 +2,7 @@ package tfar.stonesoupadditions.entity;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -45,10 +46,10 @@ import tfar.stonesoupadditions.platform.Services;
 
 import java.util.List;
 
-public class StileEntity extends ShoulderRidingEntity implements GeoEntity , SmartBrainOwner<StileEntity>, ContainerListener,
-        HasCustomInventoryScreen{
+public class StileEntity extends ShoulderRidingEntity implements GeoEntity, SmartBrainOwner<StileEntity>, ContainerListener,
+        HasCustomInventoryScreen {
 
-    private static final EntityDataAccessor<Integer> FAINT_TIMER = SynchedEntityData.defineId(StileEntity.class,EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> FAINT_TIMER = SynchedEntityData.defineId(StileEntity.class, EntityDataSerializers.INT);
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
@@ -56,6 +57,12 @@ public class StileEntity extends ShoulderRidingEntity implements GeoEntity , Sma
 
     public StileEntity(EntityType<? extends StileEntity> entityType, Level level) {
         super(entityType, level);
+    }
+
+    public static StileEntity readStileEntity(Level level, FriendlyByteBuf buf) {
+        int id = buf.readInt();
+        Entity entity = level.getEntity(id);
+        return entity instanceof StileEntity ? (StileEntity) entity : null;
     }
 
     @Override
@@ -90,7 +97,7 @@ public class StileEntity extends ShoulderRidingEntity implements GeoEntity , Sma
 
     @Override
     public List<? extends ExtendedSensor<StileEntity>> getSensors() {
-        return List.of(new HurtBySensor<>(),new NearbyLivingEntitySensor<>());
+        return List.of(new HurtBySensor<>(), new NearbyLivingEntitySensor<>());
     }
 
     @Override
@@ -113,20 +120,52 @@ public class StileEntity extends ShoulderRidingEntity implements GeoEntity , Sma
                                 .stopIf(p -> isInteracting() || isOrderedToSit())), // Set the look target to a random nearby location
                 new OneRandomBehaviour<>( // Run only one of the below behaviours, picked at random
                         new SetRandomWalkTarget<>() // Set the walk target to a nearby random pathable location
-                                .speedModifier(1).startCondition(p -> !isInteracting())
-                                .stopIf(p -> isInteracting()),
+                                .speedModifier(1).startCondition(p -> !isInteracting() && !isOrderedToSit())
+                                .stopIf(p -> isInteracting() || isOrderedToSit()),
                         new Idle<>() // Don't do anything for a bit
-                                .runFor(entity -> entity.getRandom().nextInt(30, 60))));
+                                .runFor(entity -> entity.getRandom().nextInt(20, 40))));
     }
 
     @Override
     public BrainActivityGroup<? extends StileEntity> getCoreTasks() {
         return BrainActivityGroup.coreTasks(
                 new LookAtTarget<>(),                      // Have the entity turn to face and look at its current look target
-                new MoveToWalkTarget<>().cooldownFor(e -> 5).startCondition(p -> !isInteracting() && !isOrderedToSit())
-                        .stopIf(p -> isInteracting()),//stop moving while equipping gear
+                new MoveToWalkTarget<>()
+                        .startCondition(p -> isMobile())
+                        .stopIf(p -> isInteracting() || isOrderedToSit()),//stop moving while equipping gear
                 new FollowOwner<>().following(o -> o.isOrderedToSit() || o.isPassenger() ? null : o.getOwner())
         );
+    }
+
+    protected boolean isMobile() {
+        boolean b = !isInteracting() && !isOrderedToSit();
+        return b;
+    }
+
+    @Override
+    public BrainActivityGroup<? extends StileEntity> getFightTasks() {
+        return BrainActivityGroup.fightTasks(
+                new InvalidateAttackTarget<>(), // Cancel fighting if the target is no longer valid
+                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5f),      // Set the walk target to the attack target
+                new OneRandomBehaviour<>(
+                        Pair.of(new AnimatableMeleeAttack<>(12) {
+                            @Override
+                            protected void start(Mob entity) {
+                                super.start(entity);
+                                triggerAnim("main", "short_attack");
+                                //BehaviorUtils.lookAtEntity(entity, this.target);
+                            }
+                        }, 9)
+                        , Pair.of(new AnimatableMeleeAttack<>(8) {
+                            @Override
+                            protected void start(Mob entity) {
+                                super.start(entity);
+                                triggerAnim("main", "jump_attack");
+                                //BehaviorUtils.lookAtEntity(entity, this.target);
+                                 }
+                            }, 3)
+                )
+        );// Melee attack the target if close enough
     }
 
     boolean shouldRideOwner() {
@@ -144,28 +183,6 @@ public class StileEntity extends ShoulderRidingEntity implements GeoEntity , Sma
         boolean passenger = owner.isPassenger();
         return !passenger;
     }
-
-    @Override
-    public BrainActivityGroup<? extends StileEntity> getFightTasks() {
-        return BrainActivityGroup.fightTasks(
-                new InvalidateAttackTarget<>()
-                        .invalidateIf((entity, target) ->  target instanceof Player pl &&
-                                (pl.isCreative() || pl.isSpectator())), // Cancel fighting if the target is no longer valid
-                new SetWalkTargetToAttackTarget<>().speedMod((owner, target) -> 1.5f),      // Set the walk target to the attack target
-
-
-                new OneRandomBehaviour<>(
-                        Pair.of(new AnimatableMeleeAttack<>(4) {
-                            @Override
-                            protected void start(Mob entity) {
-                                super.start(entity);
-                                //BehaviorUtils.lookAtEntity(entity, this.target);
-                            }
-                        },9))
-
-        );// Melee attack the target if close enough
-    }
-
 
     @Override
     protected void customServerAiStep() {
@@ -218,7 +235,7 @@ public class StileEntity extends ShoulderRidingEntity implements GeoEntity , Sma
     }
 
     public static AttributeSupplier.Builder createStileAttributes() {
-        return createMobAttributes().add(Attributes.MOVEMENT_SPEED,.3).add(Attributes.ATTACK_DAMAGE);
+        return createMobAttributes().add(Attributes.MOVEMENT_SPEED, .3).add(Attributes.ATTACK_DAMAGE);
     }
 
     @Override
@@ -229,7 +246,7 @@ public class StileEntity extends ShoulderRidingEntity implements GeoEntity , Sma
     @Override
     public void openCustomInventoryScreen(Player player) {
         if (!this.level().isClientSide && (!this.isVehicle() || this.hasPassenger(player))) {
-            Services.PLATFORM.openExtendedMenu(player,Services.PLATFORM.curioMenuProvider(this),b -> b.writeInt(getId()));
+            Services.PLATFORM.openExtendedMenu(player, Services.PLATFORM.curioMenuProvider(this), b -> b.writeInt(getId()));
         }
     }
 
@@ -325,8 +342,7 @@ public class StileEntity extends ShoulderRidingEntity implements GeoEntity , Sma
             ItemStack itemstack = player.getItemInHand(hand);
             if (itemstack.is(ItemTags.SAPLINGS) && !isTame()) {
                 tryToTame(player);
-            }
-            else if (!itemstack.isEmpty()) {
+            } else if (!itemstack.isEmpty()) {
                 InteractionResult interactionresult = itemstack.interactLivingEntity(player, this, hand);
                 if (interactionresult.consumesAction()) {
                     return interactionresult;
@@ -334,7 +350,8 @@ public class StileEntity extends ShoulderRidingEntity implements GeoEntity , Sma
             }
 
             if (isOwnedBy(player)) {
-                this.setOrderedToSit(!this.isOrderedToSit());
+                setOrderedToSit(!this.isOrderedToSit());
+                setInSittingPose(!this.isInSittingPose());
                 this.jumping = false;
                 this.navigation.stop();
                 this.setTarget(null);
@@ -351,9 +368,9 @@ public class StileEntity extends ShoulderRidingEntity implements GeoEntity , Sma
             this.tame(player);
             this.navigation.stop();
             this.setTarget(null);
-            this.level().broadcastEntityEvent(this, (byte)7);
+            this.level().broadcastEntityEvent(this, (byte) 7);
         } else {
-            this.level().broadcastEntityEvent(this, (byte)6);
+            this.level().broadcastEntityEvent(this, (byte) 6);
         }
     }
 
@@ -373,7 +390,7 @@ public class StileEntity extends ShoulderRidingEntity implements GeoEntity , Sma
         CompoundTag compoundtag = new CompoundTag();
         compoundtag.putString("id", this.getEncodeId());
         this.saveWithoutId(compoundtag);
-        if (((PlayerDuck)player).setStileEntityOnShoulder(compoundtag)) {
+        if (((PlayerDuck) player).setStileEntityOnShoulder(compoundtag)) {
             this.discard();
             return true;
         } else {

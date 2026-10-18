@@ -42,7 +42,6 @@ public class StoneSoupClientNeoForge {
     }
 
     void screens(RegisterMenuScreensEvent event) {
-        MenuScreens.register(SSAMenuTypes.STILE,StileScreen::new);
         MenuScreens.register(SSAMenuTypesNeoForge.STILE_CURIOS,StileCurioScreen::new);
     }
 }

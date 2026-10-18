@@ -17,6 +17,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 import tfar.stonesoupadditions.StileCurioMenu;
+import tfar.stonesoupadditions.StoneSoupAdditions;
 import top.theillusivec4.curios.CuriosConstants;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.client.ICuriosScreen;
@@ -34,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 public class StileCurioScreen extends AbstractContainerScreen<StileCurioMenu> implements ICuriosScreen {
+    public static final ResourceLocation INVENTORY_LOCATION = StoneSoupAdditions.id("textures/gui/stile.png");
     static final ResourceLocation CURIO_INVENTORY =
             ResourceLocation.fromNamespaceAndPath(
                     CuriosConstants.MOD_ID, "textures/gui/curios/inventory.png");
@@ -225,7 +227,7 @@ public class StileCurioScreen extends AbstractContainerScreen<StileCurioMenu> im
             this.panelWidth = this.menu.panelWidth;
             int i = this.leftPos;
             int j = this.topPos;
-            guiGraphics.blit(StileScreen.INVENTORY_LOCATION, i, j, 0, 0, 176, this.imageHeight);
+            guiGraphics.blit(INVENTORY_LOCATION, i, j, 0, 0, 176, this.imageHeight);
             InventoryScreen.renderEntityInInventoryFollowsMouse(
                     guiGraphics,
                     i + 26,
@@ -437,6 +439,10 @@ public class StileCurioScreen extends AbstractContainerScreen<StileCurioMenu> im
             scrollCooldown = 2;
         }
         return super.mouseScrolled(p_94686_, p_94687_, p_94688_, p_294830_);
+    }
+
+    public void sendButtonClick(int id) {
+        this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, id);
     }
 
     @Override

@@ -41,7 +41,6 @@ public class StileCurioMenu extends AbstractContainerMenu implements ICuriosMenu
 
     private final boolean isLocalWorld;
 
-    private final ResultContainer craftResult = new ResultContainer();
     public final StileEntity stileEntity;
     public int currentPage;
     public int totalPages;
@@ -54,7 +53,7 @@ public class StileCurioMenu extends AbstractContainerMenu implements ICuriosMenu
     public int panelWidth;
 
     public StileCurioMenu(int containerId, Inventory inventory, FriendlyByteBuf buf) {
-        this(containerId,inventory,StileMenu.readStileEntity(inventory.player.level(),buf));
+        this(containerId,inventory, StileEntity.readStileEntity(inventory.player.level(),buf));
     }
 
     public StileCurioMenu(int containerId, Inventory inventory,StileEntity stileEntity) {
@@ -280,6 +279,14 @@ public class StileCurioMenu extends AbstractContainerMenu implements ICuriosMenu
         }
     }
 
+    static final int WEAPON_SLOT = 4;
+    static final int EQUIP_SLOT_END = 5;
+    static final int INV_SLOT_START = EQUIP_SLOT_END;
+    static final int INV_SLOT_END = INV_SLOT_START+27;
+    static final int USE_ROW_SLOT_START = INV_SLOT_END;
+    static final int USE_ROW_SLOT_END = USE_ROW_SLOT_START+9;
+    static final int CURIO_SLOT_START = USE_ROW_SLOT_END;
+
     @Nonnull
     @Override
     public ItemStack quickMoveStack(@Nonnull Player playerIn, int index) {
@@ -290,33 +297,21 @@ public class StileCurioMenu extends AbstractContainerMenu implements ICuriosMenu
             ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
             EquipmentSlot entityequipmentslot = playerIn.getEquipmentSlotForItem(itemstack);
-            if (index == 0) {
-
-                if (!this.moveItemStackTo(itemstack1, 9, 45, true)) {
-                    return ItemStack.EMPTY;
-                }
-                slot.onQuickCraft(itemstack1, itemstack);
-            } else if (index < 5) {
-
-                if (!this.moveItemStackTo(itemstack1, 9, 45, false)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (index < 9) {
-
-                if (!this.moveItemStackTo(itemstack1, 9, 45, false)) {
+            if (index < EQUIP_SLOT_END) {//equipment slots
+                if (!this.moveItemStackTo(itemstack1, INV_SLOT_START, USE_ROW_SLOT_END, false)) {
                     return ItemStack.EMPTY;
                 }
             } else if (entityequipmentslot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR
-                    && !this.slots.get(8 - entityequipmentslot.getIndex()).hasItem()) {
-                int i = 8 - entityequipmentslot.getIndex();
+                    && !this.slots.get(3 - entityequipmentslot.getIndex()).hasItem()) {
+                int i = 3 - entityequipmentslot.getIndex();
 
                 if (!this.moveItemStackTo(itemstack1, i, i + 1, false)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (index < 46 &&
+            } else if (index < USE_ROW_SLOT_END &&
                     !CuriosApi.getItemStackSlots(itemstack, playerIn.level()).isEmpty()) {
 
-                if (!this.moveItemStackTo(itemstack1, 46, this.slots.size(), false)) {
+                if (!this.moveItemStackTo(itemstack1, CURIO_SLOT_START, this.slots.size(), false)) {
                     int page = this.findAvailableSlot(itemstack1);
 
                     if (page != -1) {
@@ -326,21 +321,21 @@ public class StileCurioMenu extends AbstractContainerMenu implements ICuriosMenu
                         return ItemStack.EMPTY;
                     }
                 }
-            } else if (entityequipmentslot == EquipmentSlot.OFFHAND && !(this.slots.get(45))
+            } /*else if (entityequipmentslot == EquipmentSlot.OFFHAND && !(this.slots.get(45))
                     .hasItem()) {
 
-                if (!this.moveItemStackTo(itemstack1, 45, 46, false)) {
+                if (!this.moveItemStackTo(itemstack1, 5+36, 5+36+1, false)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (index < 36) {
-                if (!this.moveItemStackTo(itemstack1, 36, 45, false)) {
+            }*/ else if (index < INV_SLOT_END) {
+                if (!this.moveItemStackTo(itemstack1, USE_ROW_SLOT_START, USE_ROW_SLOT_END, false)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (index < 45) {
-                if (!this.moveItemStackTo(itemstack1, 9, 36, false)) {
+            } else if (index < USE_ROW_SLOT_END) {
+                if (!this.moveItemStackTo(itemstack1, INV_SLOT_START, INV_SLOT_END, false)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.moveItemStackTo(itemstack1, 9, 45, false)) {
+            } else if (!this.moveItemStackTo(itemstack1, INV_SLOT_START, USE_ROW_SLOT_END, false)) {
                 return ItemStack.EMPTY;
             }
 
@@ -354,10 +349,6 @@ public class StileCurioMenu extends AbstractContainerMenu implements ICuriosMenu
                 return ItemStack.EMPTY;
             }
             slot.onTake(playerIn, itemstack1);
-
-            if (index == 0) {
-                playerIn.drop(itemstack1, false);
-            }
         }
 
         return itemstack;

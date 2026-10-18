@@ -25,7 +25,7 @@ public class CurioButton extends ImageButton {
                     if (mc.player != null) {
                         ItemStack stack = mc.player.containerMenu.getCarried();
                         mc.player.containerMenu.setCarried(ItemStack.EMPTY);
-                        if (parentGui instanceof StileScreen stileScreen) {
+                        if (parentGui instanceof StileCurioScreen stileScreen) {
                             stileScreen.sendButtonClick(0);
                         }
                     }
