@@ -1,6 +1,7 @@
 package tfar.stonesoupadditions;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import tfar.stonesoupadditions.init.SSAEntityTypes;
 import tfar.stonesoupadditions.init.SSAItems;
 import tfar.stonesoupadditions.init.SSAMenuTypes;
@@ -25,5 +26,9 @@ public class StoneSoupAdditions {
 
     public static ResourceLocation id(String name) {
         return ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, name);
+    }
+
+    public static boolean isDualShields(Player player) {
+        return player.getMainHandItem().is(SSAItems.DUELING_SHIELD) && player.getOffhandItem().is(SSAItems.DUELING_SHIELD);
     }
 }

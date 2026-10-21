@@ -1,14 +1,23 @@
 package tfar.stonesoupadditions;
 
 
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import tfar.stonesoupadditions.datagen.SSADatagen;
 import tfar.stonesoupadditions.entity.StileEntity;
 import tfar.stonesoupadditions.init.SSAEntityTypes;
+import tfar.stonesoupadditions.init.SSAItems;
 import tfar.stonesoupadditions.platform.NeoForgePlatformHelper;
 
 @Mod(Constants.MOD_ID)
@@ -19,11 +28,30 @@ public class StoneSoupAdditionsNeoForge {
         eventBus.addListener(this::createAttributes);
         StoneSoupAdditions.init();
         eventBus.addListener(SSADatagen::gather);
+        NeoForge.EVENT_BUS.addListener(this::playerTick);
     }
 
     public void register(RegisterEvent event) {
         StoneSoupAdditions.register();
         SSAMenuTypesNeoForge.init();
+    }
+
+    void playerTick(PlayerTickEvent.Pre event) {
+        Player player = event.getEntity();
+        if (player.tickCount % 20 == 0 && player instanceof ServerPlayer serverPlayer) {
+            ItemStack mainHandStack = player.getMainHandItem();
+            ItemStack offHandStack = player.getOffhandItem();
+            int resistanceLevel = 0;
+            if (mainHandStack.getItem() == SSAItems.DUELING_SHIELD) {
+                resistanceLevel++;
+            }
+            if (offHandStack.getItem() == SSAItems.DUELING_SHIELD) {
+                resistanceLevel++;
+            }
+            if (resistanceLevel > 0) {
+                player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 25, resistanceLevel-1));
+            }
+        }
     }
 
     void createAttributes(EntityAttributeCreationEvent event) {
