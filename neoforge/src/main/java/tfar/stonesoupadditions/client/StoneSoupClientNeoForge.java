@@ -11,11 +11,14 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import tfar.stonesoupadditions.Constants;
 import tfar.stonesoupadditions.SSAMenuTypesNeoForge;
 import tfar.stonesoupadditions.init.SSAEntityTypes;
 import tfar.stonesoupadditions.init.SSAMenuTypes;
+import tfar.stonesoupadditions.network.server.C2SEmptyClickPacket;
 
 import java.util.Set;
 
@@ -25,6 +28,7 @@ public class StoneSoupClientNeoForge {
         bus.addListener(this::models);
         bus.addListener(this::layers);
         bus.addListener(this::screens);
+        NeoForge.EVENT_BUS.addListener(this::handleLeftClick);
     }
 
     void models(final EntityRenderersEvent.RegisterRenderers event) {
@@ -39,6 +43,10 @@ public class StoneSoupClientNeoForge {
                 playerRenderer.addLayer(new StileOnShoulderLayer<>(playerRenderer,event.getEntityModels(),event.getContext()));
             }
         }
+    }
+
+    void handleLeftClick(PlayerInteractEvent.LeftClickEmpty event) {
+        C2SEmptyClickPacket.INSTANCE.send();
     }
 
     void screens(RegisterMenuScreensEvent event) {

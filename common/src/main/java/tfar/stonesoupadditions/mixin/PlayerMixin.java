@@ -1,6 +1,7 @@
 package tfar.stonesoupadditions.mixin;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -8,8 +9,12 @@ import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tfar.stonesoupadditions.PlayerDuck;
+import tfar.stonesoupadditions.attachments.DataAttachmentUtil;
+import tfar.stonesoupadditions.item.DuelingShieldItem;
 
 @Mixin(Player.class)
 public abstract class PlayerMixin extends LivingEntity implements PlayerDuck{
@@ -53,5 +58,12 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck{
             target = "Lnet/minecraft/world/item/ItemCooldowns;addCooldown(Lnet/minecraft/world/item/Item;I)V"))
     private int changeCooldown(int cooldown) {
         return cooldown;
+    }
+
+    @Inject(method = "touch",at = @At("RETURN"))
+    private void doDashAttack(Entity entity, CallbackInfo ci) {
+        if (DataAttachmentUtil.isDashing((Player)(Object)this)) {
+            DuelingShieldItem.doDashAttack((Player)(Object)this,entity);
+        }
     }
 }

@@ -2,6 +2,7 @@ package tfar.stonesoupadditions.network;
 
 import net.minecraft.resources.ResourceLocation;
 import tfar.stonesoupadditions.StoneSoupAdditions;
+import tfar.stonesoupadditions.network.server.C2SEmptyClickPacket;
 import tfar.stonesoupadditions.network.server.C2SOpenStileCuriosPacket;
 import tfar.stonesoupadditions.platform.Services;
 
@@ -12,6 +13,7 @@ public class PacketHandler {
     public static void registerPackets() {
 
         Services.PLATFORM.registerServerPacket(C2SOpenStileCuriosPacket.TYPE, C2SOpenStileCuriosPacket.STREAM_CODEC);
+        Services.PLATFORM.registerServerPacket(C2SEmptyClickPacket.TYPE, C2SEmptyClickPacket.STREAM_CODEC);
 
         ///////server to client
     }

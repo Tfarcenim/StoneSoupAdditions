@@ -11,7 +11,9 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
+import org.jetbrains.annotations.Nullable;
 import tfar.stonesoupadditions.ContainerFactory;
+import tfar.stonesoupadditions.attachments.CommonDataAttachment;
 import tfar.stonesoupadditions.entity.StileEntity;
 import tfar.stonesoupadditions.network.client.S2CModPacket;
 import tfar.stonesoupadditions.network.server.C2SModPacket;
@@ -69,5 +71,28 @@ public interface IPlatformHelper {
     void sendToServer(C2SModPacket msg);
 
     MenuProvider curioMenuProvider(StileEntity stileEntity);
+
+    <T> void registerDataAttachment(CommonDataAttachment<T> attachment);
+
+    @Nullable
+    <T> T getAttachedValue(Object object, CommonDataAttachment<T> attachment);
+
+    @Nullable
+    default <T> T getOrDefaultAttachedValue(Object object, CommonDataAttachment<T> attachment,T defaultValue) {
+        T value = getAttachedValue(object, attachment);
+        return value != null ? value : defaultValue;
+    }
+
+    default <T> T getOrCreateAttachedValue(Object object, CommonDataAttachment<T> attachment) {
+        T value = getAttachedValue(object, attachment);
+        if (value != null) {
+            return value;
+        }
+        value = attachment.getDefaultValueSupplier().apply(object);
+        setAttachedValue(object, attachment, value);
+        return value;
+    }
+
+    <T> void setAttachedValue(Object object, CommonDataAttachment<T> attachment, @Nullable T value);
 
 }

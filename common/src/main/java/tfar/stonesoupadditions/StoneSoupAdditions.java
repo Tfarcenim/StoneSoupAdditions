@@ -2,6 +2,7 @@ package tfar.stonesoupadditions;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import tfar.stonesoupadditions.attachments.CommonDataAttachments;
 import tfar.stonesoupadditions.init.SSAEntityTypes;
 import tfar.stonesoupadditions.init.SSAItems;
 import tfar.stonesoupadditions.init.SSAMenuTypes;
@@ -22,6 +23,7 @@ public class StoneSoupAdditions {
         SSAEntityTypes.init();
         SSAItems.init();
         SSAMenuTypes.init();
+        CommonDataAttachments.init();
     }
 
     public static ResourceLocation id(String name) {
