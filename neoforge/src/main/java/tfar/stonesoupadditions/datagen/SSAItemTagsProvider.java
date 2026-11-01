@@ -16,6 +16,6 @@ public class SSAItemTagsProvider extends ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        tag(ItemTags.SWORD_ENCHANTABLE).add(SSAItems.DUELING_SHIELD);
+        tag(ItemTags.SWORD_ENCHANTABLE).add(SSAItems.DUELING_SHIELD,SSAItems.LUSH_SCEPTER);
     }
 }

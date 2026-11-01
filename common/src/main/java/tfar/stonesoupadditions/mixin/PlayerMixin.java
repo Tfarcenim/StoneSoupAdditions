@@ -8,17 +8,25 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import tfar.stonesoupadditions.PlayerDuck;
 import tfar.stonesoupadditions.attachments.DataAttachmentUtil;
+import tfar.stonesoupadditions.entity.LushScepterHookEntity;
 import tfar.stonesoupadditions.item.DuelingShieldItem;
+
+import javax.annotation.Nullable;
 
 @Mixin(Player.class)
 public abstract class PlayerMixin extends LivingEntity implements PlayerDuck{
 
+
+    @Unique
+    @Nullable
+    private LushScepterHookEntity lushScepterHookEntity;
 
     @Shadow
     public abstract CompoundTag getShoulderEntityLeft();
@@ -65,5 +73,15 @@ public abstract class PlayerMixin extends LivingEntity implements PlayerDuck{
         if (DataAttachmentUtil.isDashing((Player)(Object)this)) {
             DuelingShieldItem.doDashAttack((Player)(Object)this,entity);
         }
+    }
+
+    @Override
+    public void setLushScepterHook(@Nullable LushScepterHookEntity lushScepterHookEntity) {
+        this.lushScepterHookEntity = lushScepterHookEntity;
+    }
+
+    @Override
+    public LushScepterHookEntity getLushScepterHook() {
+        return lushScepterHookEntity;
     }
 }

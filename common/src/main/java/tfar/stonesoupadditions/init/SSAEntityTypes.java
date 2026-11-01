@@ -5,12 +5,18 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import tfar.stonesoupadditions.entity.LushScepterHookEntity;
 import tfar.stonesoupadditions.entity.StileEntity;
 import tfar.stonesoupadditions.StoneSoupAdditions;
 
 public class SSAEntityTypes {
     public static final EntityType<StileEntity> STILE = register("stile",EntityType.Builder.of(StileEntity::new, MobCategory.CREATURE)
             .sized(.6f,1.125f)
+    );
+
+    public static final EntityType<LushScepterHookEntity> LUSH_SCEPTER_HOOK = register("lush_scepter_hook",EntityType.Builder
+            .<LushScepterHookEntity>of(LushScepterHookEntity::new, MobCategory.MISC).noSave().noSummon()
+            .sized(.5f,.5f)
     );
 
     public static void init() {

@@ -3,6 +3,7 @@ package tfar.stonesoupadditions.client;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.world.entity.player.Player;
@@ -33,6 +34,7 @@ public class StoneSoupClientNeoForge {
 
     void models(final EntityRenderersEvent.RegisterRenderers event) {
         EntityRenderers.register(SSAEntityTypes.STILE,c -> new StileRenderer(c,SSAEntityTypes.STILE));
+        EntityRenderers.register(SSAEntityTypes.LUSH_SCEPTER_HOOK, NoopRenderer::new);
     }
 
     void layers(EntityRenderersEvent.AddLayers event) {

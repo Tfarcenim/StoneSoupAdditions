@@ -14,6 +14,8 @@ public class SSALang extends LanguageProvider {
     @Override
     protected void addTranslations() {
         add(SSAEntityTypes.STILE, "Stile");
+        add(SSAEntityTypes.LUSH_SCEPTER_HOOK, "Lush Scepter Hook");
         add(SSAItems.DUELING_SHIELD, "Dueling Shield");
+        add(SSAItems.LUSH_SCEPTER, "Lush Scepter");
     }
 }

@@ -12,8 +12,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
@@ -160,4 +162,8 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
         }
     }
 
+    @Override
+    public boolean onProjectileImpact(Projectile projectile, HitResult hitResult) {
+        return net.neoforged.neoforge.event.EventHooks.onProjectileImpact(projectile, hitResult);
+    }
 }
