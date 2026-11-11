@@ -17,5 +17,6 @@ public class SSALang extends LanguageProvider {
         add(SSAEntityTypes.LUSH_SCEPTER_HOOK, "Lush Scepter Hook");
         add(SSAItems.DUELING_SHIELD, "Dueling Shield");
         add(SSAItems.LUSH_SCEPTER, "Lush Scepter");
+        add(SSAItems.GS_04,"GS-04");
     }
 }

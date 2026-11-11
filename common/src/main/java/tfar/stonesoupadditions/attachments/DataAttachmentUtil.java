@@ -2,6 +2,7 @@ package tfar.stonesoupadditions.attachments;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
+import tfar.stonesoupadditions.ClientControls;
 import tfar.stonesoupadditions.item.DuelingShieldItem;
 import tfar.stonesoupadditions.platform.Services;
 
@@ -9,40 +10,6 @@ public class DataAttachmentUtil {
 
     public static <T> void clearValue(LivingEntity entity,CommonDataAttachment<T> attachment) {
         Services.PLATFORM.setAttachedValue(entity,attachment, attachment.defaultValueSupplier.apply(entity));
-    }
-
-    public static void setHasClickedLeftRecently(ServerPlayer entity) {
-       Services.PLATFORM.setAttachedValue(entity,CommonDataAttachments.HAS_CLICKED_LEFT_RECENTLY,10);
-       DuelingShieldItem.checkForDash(entity);
-    }
-
-    public static void setHasClickedRightRecently(ServerPlayer entity) {
-        Services.PLATFORM.setAttachedValue(entity,CommonDataAttachments.HAS_CLICKED_RIGHT_RECENTLY,10);
-        DuelingShieldItem.checkForDash(entity);
-    }
-
-    public static boolean hasClickedLeftRecently(LivingEntity entity) {
-        return Services.PLATFORM.getOrCreateAttachedValue(entity,CommonDataAttachments.HAS_CLICKED_LEFT_RECENTLY) >0;
-    }
-
-    public static boolean hasClickedRightRecently(LivingEntity entity) {
-        return Services.PLATFORM.getOrCreateAttachedValue(entity,CommonDataAttachments.HAS_CLICKED_RIGHT_RECENTLY) > 0;
-    }
-
-    public static void decrementRightClick(LivingEntity entity) {
-        int i = Services.PLATFORM.getOrCreateAttachedValue(entity,CommonDataAttachments.HAS_CLICKED_RIGHT_RECENTLY);
-        if (i > 0) {
-            i--;
-            Services.PLATFORM.setAttachedValue(entity,CommonDataAttachments.HAS_CLICKED_RIGHT_RECENTLY,i);
-        }
-    }
-
-    public static void decrementLeftClick(LivingEntity entity) {
-        int i = Services.PLATFORM.getOrCreateAttachedValue(entity,CommonDataAttachments.HAS_CLICKED_LEFT_RECENTLY);
-        if (i > 0) {
-            i--;
-            Services.PLATFORM.setAttachedValue(entity,CommonDataAttachments.HAS_CLICKED_LEFT_RECENTLY,i);
-        }
     }
 
     public static void decrementDashing(LivingEntity entity) {
@@ -61,4 +28,11 @@ public class DataAttachmentUtil {
         Services.PLATFORM.setAttachedValue(entity,CommonDataAttachments.DASHING,10);
     }
 
+    public static ClientControls getClientControls(ServerPlayer player) {
+        return Services.PLATFORM.getOrCreateAttachedValue(player,CommonDataAttachments.CLIENT_CONTROLS);
+    }
+
+    public static void setClientControls(ServerPlayer player,ClientControls clientControls) {
+        Services.PLATFORM.setAttachedValue(player,CommonDataAttachments.CLIENT_CONTROLS,clientControls);
+    }
 }

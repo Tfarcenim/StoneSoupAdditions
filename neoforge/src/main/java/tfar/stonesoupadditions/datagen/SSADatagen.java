@@ -23,6 +23,8 @@ public class SSADatagen {
         event.addProvider(blockTagsProvider);
 
         event.addProvider(new SSAItemTagsProvider(output,lookup,blockTagsProvider.contentsGetter()));
+
+        event.addProvider(new SSAItemModelProvider(output,existingFileHelper));
     }
 
 }

@@ -3,6 +3,7 @@ package tfar.stonesoupadditions.attachments;
 import com.mojang.serialization.Codec;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceLocation;
+import tfar.stonesoupadditions.ClientControls;
 import tfar.stonesoupadditions.platform.Services;
 
 
@@ -12,19 +13,12 @@ public class CommonDataAttachments {
 
     private static final Map<ResourceLocation,CommonDataAttachment<?>> MAP =new HashMap<>();
 
-    public static final CommonDataAttachment<Integer> HAS_CLICKED_LEFT_RECENTLY =
-            register(CommonDataAttachment.create(o -> 0)
-                    .copyOnDeath()
-                    .networkSynchronized(ByteBufCodecs.INT)
-                    .codec(Codec.INT)
-                    .build("has_clicked_left_recently"));
+    public static final CommonDataAttachment<ClientControls> CLIENT_CONTROLS =
+            register(CommonDataAttachment.create(o -> new ClientControls(false,false,-1,-1,0))
+                    .build("client_controls"));
 
-    public static final CommonDataAttachment<Integer> HAS_CLICKED_RIGHT_RECENTLY =
-            register(CommonDataAttachment.create(o -> 0)
-                    .copyOnDeath()
-                    .networkSynchronized(ByteBufCodecs.INT)
-                    .codec(Codec.INT)
-                    .build("has_clicked_right_recently"));
+
+
 
     public static final CommonDataAttachment<Integer> DASHING =
             register(CommonDataAttachment.create(o -> 0)

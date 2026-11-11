@@ -16,6 +16,7 @@ import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import tfar.stonesoupadditions.ClientControls;
 import tfar.stonesoupadditions.attachments.DataAttachmentUtil;
 import tfar.stonesoupadditions.init.SSAItems;
 
@@ -55,7 +56,7 @@ public class DuelingShieldItem extends ShieldItem {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         if (player instanceof ServerPlayer serverPlayer) {
-            DataAttachmentUtil.setHasClickedRightRecently(serverPlayer);
+            checkForDash(serverPlayer);
         }
         return super.use(level, player, hand);
     }
@@ -66,8 +67,10 @@ public class DuelingShieldItem extends ShieldItem {
     }
 
     public static void checkForDash(ServerPlayer player) {
-        boolean hasClickedLeftRecently = DataAttachmentUtil.hasClickedLeftRecently(player);
-        boolean hasClickedRightRecently = DataAttachmentUtil.hasClickedRightRecently(player);
+        ClientControls clientControls = DataAttachmentUtil.getClientControls(player);
+        long time = player.level().getGameTime();
+        boolean hasClickedLeftRecently = clientControls.recentlyHoldingLeftClick(time);
+        boolean hasClickedRightRecently = clientControls.recentlyHoldingRightClick(time);
         int shields = getShieldCount(player);
         if (player.isShiftKeyDown() && hasClickedRightRecently && hasClickedLeftRecently && shields > 0) {
             double force = shields * 2;
