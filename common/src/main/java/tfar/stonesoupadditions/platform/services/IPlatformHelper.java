@@ -3,20 +3,24 @@ package tfar.stonesoupadditions.platform.services;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.Nullable;
 import tfar.stonesoupadditions.ContainerFactory;
 import tfar.stonesoupadditions.attachments.CommonDataAttachment;
 import tfar.stonesoupadditions.entity.StileEntity;
+import tfar.stonesoupadditions.item.GS04Item;
 import tfar.stonesoupadditions.network.client.S2CModPacket;
 import tfar.stonesoupadditions.network.server.C2SModPacket;
 
@@ -98,5 +102,11 @@ public interface IPlatformHelper {
     <T> void setAttachedValue(Object object, CommonDataAttachment<T> attachment, @Nullable T value);
 
     boolean onProjectileImpact(Projectile projectile, HitResult hitResult);
+
+    GS04Item gsO4Item(Item.Properties properties);
+
+    void setMayFly(ServerPlayer player, boolean mayFly);
+
+    Holder<Attribute> getCreativeFlightAttribute();
 
 }

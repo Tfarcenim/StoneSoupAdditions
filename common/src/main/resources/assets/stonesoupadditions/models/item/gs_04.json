@@ -146,6 +146,6 @@
     }
   },
   "textures": {
-    "particle": "stonesoup:item/gs-04"
+    "particle": "stonesoupadditions:item/gs_04"
   }
 }

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:anvil"
+    },
+    "G": {
+      "item": "minecraft:gold_block"
+    },
+    "s": {
+      "item": "minecraft:shield"
+    }
+  },
+  "pattern": [
+    "AGA",
+    "GsG",
+    " A "
+  ],
+  "result": {
+    "count": 1,
+    "id": "stonesoupadditions:dueling_shield"
+  }
+}

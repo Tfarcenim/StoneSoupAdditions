@@ -3,9 +3,7 @@ package tfar.stonesoupadditions;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import tfar.stonesoupadditions.attachments.CommonDataAttachments;
-import tfar.stonesoupadditions.init.SSAEntityTypes;
-import tfar.stonesoupadditions.init.SSAItems;
-import tfar.stonesoupadditions.init.SSAMenuTypes;
+import tfar.stonesoupadditions.init.*;
 
 // This class is part of the common project meaning it is shared between all supported loaders. Code written here can only
 // import and access the vanilla codebase, libraries used by vanilla, and optionally third party libraries that provide
@@ -20,8 +18,11 @@ public class StoneSoupAdditions {
     }
 
     public static void register() {
+        SSABlocks.init();
         SSAEntityTypes.init();
         SSAItems.init();
+        SSABlockEntityTypes.init();
+        SSAMobEffects.init();
         SSAMenuTypes.init();
         CommonDataAttachments.init();
     }

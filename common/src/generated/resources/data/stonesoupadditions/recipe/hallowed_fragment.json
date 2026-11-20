@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "N": {
+      "item": "minecraft:nether_star"
+    },
+    "g": {
+      "item": "minecraft:glowstone_dust"
+    }
+  },
+  "pattern": [
+    " g ",
+    "gNg",
+    " g "
+  ],
+  "result": {
+    "count": 1,
+    "id": "stonesoupadditions:hallowed_fragment"
+  }
+}

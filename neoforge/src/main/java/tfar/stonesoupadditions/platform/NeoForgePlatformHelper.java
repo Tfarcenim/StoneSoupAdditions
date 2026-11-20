@@ -3,6 +3,7 @@ package tfar.stonesoupadditions.platform;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -10,24 +11,32 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
+import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 import tfar.stonesoupadditions.ContainerFactory;
+import tfar.stonesoupadditions.FlightEffect;
 import tfar.stonesoupadditions.StileCurioMenu;
 import tfar.stonesoupadditions.attachments.CommonDataAttachment;
 import tfar.stonesoupadditions.entity.StileEntity;
 import tfar.stonesoupadditions.client.CurioButton;
+import tfar.stonesoupadditions.item.GS04Item;
+import tfar.stonesoupadditions.item.GS04NeoForgeItem;
 import tfar.stonesoupadditions.network.client.S2CModPacket;
 import tfar.stonesoupadditions.network.server.C2SModPacket;
 import tfar.stonesoupadditions.platform.services.IPlatformHelper;
@@ -165,5 +174,31 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     @Override
     public boolean onProjectileImpact(Projectile projectile, HitResult hitResult) {
         return net.neoforged.neoforge.event.EventHooks.onProjectileImpact(projectile, hitResult);
+    }
+
+    @Override
+    public GS04Item gsO4Item(Item.Properties properties) {
+        return new GS04NeoForgeItem(properties);
+    }
+
+    /**
+     *
+     * @param player
+     * @param mayFly
+     * @see net.minecraft.world.entity.player.Abilities#mayfly
+     */
+    @Override
+    public void setMayFly(ServerPlayer player, boolean mayFly) {
+        AttributeInstance attributeInstance = player.getAttribute(NeoForgeMod.CREATIVE_FLIGHT);
+        if (mayFly) {
+            attributeInstance.addTransientModifier(new AttributeModifier(FlightEffect.ID, 1, AttributeModifier.Operation.ADD_VALUE));
+        } else {
+            attributeInstance.removeModifier(FlightEffect.ID);
+        }
+    }
+
+    @Override
+    public Holder<Attribute> getCreativeFlightAttribute() {
+        return NeoForgeMod.CREATIVE_FLIGHT;
     }
 }

@@ -25,6 +25,12 @@ public class SSADatagen {
         event.addProvider(new SSAItemTagsProvider(output,lookup,blockTagsProvider.contentsGetter()));
 
         event.addProvider(new SSAItemModelProvider(output,existingFileHelper));
+
+        event.addProvider(new SSABlockStateProvider(output,existingFileHelper));
+
+        event.addProvider(SSALootTableProvider.create(output,lookup));
+
+        event.addProvider(new SSARecipes(output,lookup));
     }
 
 }

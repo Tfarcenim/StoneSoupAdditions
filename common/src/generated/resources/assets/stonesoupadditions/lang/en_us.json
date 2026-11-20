@@ -1,7 +1,9 @@
 {
+  "block.stonesoupadditions.heart_of_fire": "Heart Of Fire",
   "entity.stonesoupadditions.lush_scepter_hook": "Lush Scepter Hook",
   "entity.stonesoupadditions.stile": "Stile",
   "item.stonesoupadditions.dueling_shield": "Dueling Shield",
   "item.stonesoupadditions.gs_04": "GS-04",
+  "item.stonesoupadditions.hallowed_fragment": "Hallowed Fragment",
   "item.stonesoupadditions.lush_scepter": "Lush Scepter"
 }

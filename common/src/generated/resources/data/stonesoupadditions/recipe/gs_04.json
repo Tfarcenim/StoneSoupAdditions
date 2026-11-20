@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "item": "createaddition:electrum_block"
+    },
+    "P": {
+      "item": "create:precision_mechanism"
+    },
+    "b": {
+      "item": "create:brass_ingot"
+    },
+    "s": {
+      "item": "createaddition:spool"
+    }
+  },
+  "pattern": [
+    "EEP",
+    " sb"
+  ],
+  "result": {
+    "count": 1,
+    "id": "stonesoupadditions:gs_04"
+  }
+}

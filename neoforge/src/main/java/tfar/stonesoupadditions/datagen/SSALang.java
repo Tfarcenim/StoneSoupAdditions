@@ -3,6 +3,7 @@ package tfar.stonesoupadditions.datagen;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import tfar.stonesoupadditions.Constants;
+import tfar.stonesoupadditions.init.SSABlocks;
 import tfar.stonesoupadditions.init.SSAEntityTypes;
 import tfar.stonesoupadditions.init.SSAItems;
 
@@ -18,5 +19,7 @@ public class SSALang extends LanguageProvider {
         add(SSAItems.DUELING_SHIELD, "Dueling Shield");
         add(SSAItems.LUSH_SCEPTER, "Lush Scepter");
         add(SSAItems.GS_04,"GS-04");
+        add(SSAItems.HALLOWED_FRAGMENT, "Hallowed Fragment");
+        add(SSABlocks.HEART_OF_FIRE, "Heart Of Fire");
     }
 }

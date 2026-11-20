@@ -71,6 +71,10 @@ dependencies {
     runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}")
     implementation("com.tterrag.registrate:Registrate:${registrate_version}")
 
+    implementation "curse.maven:createaddition-439890:9029800"
+
+    implementation "curse.maven:dynamiclights-reforged-551736:6044477"
+
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }

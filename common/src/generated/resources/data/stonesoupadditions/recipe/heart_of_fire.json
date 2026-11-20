@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:blaze_rod"
+    },
+    "N": {
+      "item": "minecraft:netherite_scrap"
+    },
+    "n": {
+      "item": "minecraft:nether_star"
+    }
+  },
+  "pattern": [
+    "BNB",
+    "NnN",
+    "BNB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "stonesoupadditions:heart_of_fire"
+  }
+}

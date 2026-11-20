@@ -1,19 +1,25 @@
 package tfar.stonesoupadditions.client;
 
+import dev.lambdaurora.lambdynlights.api.DynamicLightHandler;
+import dev.lambdaurora.lambdynlights.api.DynamicLightHandlers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.resources.PlayerSkin;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
@@ -25,9 +31,11 @@ import software.bernie.geckolib.renderer.GeoItemRenderer;
 import software.bernie.geckolib.renderer.layer.AutoGlowingGeoLayer;
 import tfar.stonesoupadditions.Constants;
 import tfar.stonesoupadditions.SSAMenuTypesNeoForge;
+import tfar.stonesoupadditions.init.SSABlocks;
 import tfar.stonesoupadditions.init.SSAEntityTypes;
 import tfar.stonesoupadditions.init.SSAItems;
 import tfar.stonesoupadditions.item.GS04Item;
+import tfar.stonesoupadditions.item.HallowedFragmentItem;
 import tfar.stonesoupadditions.network.server.C2SUpdateClientControlsPacket;
 import tfar.stonesoupadditions.platform.Services;
 
@@ -39,8 +47,18 @@ public class StoneSoupClientNeoForge {
         bus.addListener(this::models);
         bus.addListener(this::layers);
         bus.addListener(this::screens);
+        bus.addListener(this::clientExtensions);
         bus.addListener(this::clientSetup);
         NeoForge.EVENT_BUS.addListener(this::clientTick);
+    }
+
+    void clientSetup(FMLClientSetupEvent event) {
+        ItemBlockRenderTypes.setRenderLayer(SSABlocks.HEART_OF_FIRE, RenderType.cutout());
+        /*event.enqueueWork(() -> {
+            DynamicLightHandlers.registerDynamicLightHandler(EntityType.PLAYER, player -> {
+                return 15;
+            });
+        });*/
     }
 
     void clientTick(ClientTickEvent.Pre event) {
@@ -56,7 +74,7 @@ public class StoneSoupClientNeoForge {
         EntityRenderers.register(SSAEntityTypes.LUSH_SCEPTER_HOOK, NoopRenderer::new);
     }
 
-    void clientSetup(RegisterClientExtensionsEvent event) {
+    void clientExtensions(RegisterClientExtensionsEvent event) {
         event.registerItem(new IClientItemExtensions() {
 
             GeoItemRenderer<GS04Item> renderer;
@@ -70,6 +88,20 @@ public class StoneSoupClientNeoForge {
                 return renderer;
             }
         }, SSAItems.GS_04);
+
+        event.registerItem(new IClientItemExtensions() {
+
+            GeoItemRenderer<HallowedFragmentItem> renderer;
+
+            @Override
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                if (renderer == null) {
+                    renderer = new GeoItemRenderer<>(SSAItems.HALLOWED_FRAGMENT);
+                    renderer.addRenderLayer(new AutoGlowingGeoLayer<>(renderer));
+                }
+                return renderer;
+            }
+        }, SSAItems.HALLOWED_FRAGMENT);
     }
 
     void layers(EntityRenderersEvent.AddLayers event) {
