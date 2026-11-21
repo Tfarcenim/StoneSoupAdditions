@@ -4,6 +4,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
+import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.internal.NeoForgeBlockTagsProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
@@ -31,6 +32,14 @@ public class SSADatagen {
         event.addProvider(SSALootTableProvider.create(output,lookup));
 
         event.addProvider(new SSARecipes(output,lookup));
+
+        DatapackBuiltinEntriesProvider provider = new SSADatapackProvider(output,lookup);
+
+        event.addProvider(provider);
+
+        lookup = provider.getRegistryProvider();
+
+        event.addProvider(new SSADamageTypeTagsProvider(output,lookup,existingFileHelper));
     }
 
 }

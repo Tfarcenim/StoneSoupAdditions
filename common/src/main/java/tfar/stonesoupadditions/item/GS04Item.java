@@ -8,6 +8,8 @@ import net.minecraft.stats.Stats;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
@@ -24,6 +26,7 @@ import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
+import tfar.stonesoupadditions.init.SSADamageTypes;
 
 public class GS04Item extends Item  implements GeoItem{
 
@@ -37,12 +40,7 @@ public class GS04Item extends Item  implements GeoItem{
         if (player.isEyeInFluid(FluidTags.WATER)) {
             ServerLevel level  =player.serverLevel();
             held.shrink(1);
-            Explosion explosion =null;// new Explosion();
-            level.explode(
-                    null, level.damageSources().explosion(explosion),
-                    null, player.position(), 5.0F, true, Level.ExplosionInteraction.BLOCK
-            );
-            player.level().explode(null,player.getX(),player.getY(),player.getZ(),5, Level.ExplosionInteraction.BLOCK);
+            level.explode(null,player.getX(),player.getY(),player.getZ(),5, Level.ExplosionInteraction.BLOCK);
 
             return;
         }
@@ -50,7 +48,12 @@ public class GS04Item extends Item  implements GeoItem{
         EntityHitResult entityHitResult = raycast(player);
         if (entityHitResult != null) {
             if (entityHitResult.getEntity() instanceof LivingEntity livingEntity) {
-                livingEntity.hurt(player.damageSources().playerAttack(player),1);
+                float scaling = Math.clamp(ticksLeftClickHeld / 60f,0,1);
+            if (scaling <.5f) {
+                livingEntity.hurt(player.damageSources().playerAttack(player),5);
+            } else {
+                livingEntity.hurt(player.damageSources().source(SSADamageTypes.GS_04_CHARGED,player),12);
+            }
             }
         }
     }
